@@ -1,4 +1,6 @@
 {
-    "mongoURI": "mongodb+srv://josh123:josh123@mernpractice-vzhr9.mongodb.net/test?retryWrites=true",
-    "jwtSecret": "TimRocksMySocks69"
+  "mongoURI": "mongodb+srv://josh123:josh123@mernpractice-vzhr9.mongodb.net/test?retryWrites=true",
+  "jwtSecret": "TimRocksMySocks69",
+  "githubClientId": "5c4bd98f8e1398fdded3",
+  "githubSecret": "eb22d4cd732e5d89418dc6d53839e9010004fb55"
 }
