@@ -87,11 +87,13 @@ router.post('/', [auth, [
         });
 
         if (profile) {
-            profile = await Profile.findOneAndUpdate(
-            { user: req.user.id },
-            { $set: profileFields },
-            { new: true }
-            );
+            profile = await Profile.findOneAndUpdate({
+                user: req.user.id
+            }, {
+                $set: profileFields
+            }, {
+                new: true
+            });
 
             return res.json(profile);
         }
@@ -100,7 +102,7 @@ router.post('/', [auth, [
 
         await Profile.save();
         res.json(profile);
-    } catch(err) {
+    } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');
     }
@@ -127,12 +129,14 @@ router.get('/', async (req, res) => {
 // @access    public
 router.get('/user/:user_id', async (req, res) => {
     try {
-        const profile = await Profile.findOne({ user: req.params.user_id }).populate('user', [
+        const profile = await Profile.findOne({
+            user: req.params.user_id
+        }).populate('user', [
             'name',
             'avatar'
         ]);
 
-        if(!profile) {
+        if (!profile) {
             return res.status(400).json({
                 msg: 'Profile not found'
             })
@@ -140,7 +144,7 @@ router.get('/user/:user_id', async (req, res) => {
         res.json(profiles);
     } catch (err) {
         console.error(err.message);
-        if(err.kind == 'ObjectId') {
+        if (err.kind == 'ObjectId') {
             return res.status(400).json({
                 msg: 'Profile not found.'
             })
@@ -154,8 +158,12 @@ router.get('/user/:user_id', async (req, res) => {
 // @access    private
 router.get('/', auth, async (req, res) => {
     try {
-        await Profile.findOneAndRemove({ user: req.user.id });
-        await User.findOneAndRemove({ _id: req.user.id });
+        await Profile.findOneAndRemove({
+            user: req.user.id
+        });
+        await User.findOneAndRemove({
+            _id: req.user.id
+        });
         res.json({
             msg: 'User has been deleted.'
         });
@@ -215,8 +223,99 @@ router.put('/experience', [auth, [
     }
 });
 
-// @route     DELETE api/profile/experience
+// @route     DELETE api/profile/experience/exp_id
 // @desc      Delete profile experience
 // @access    private
+router.delete('/experience/:exp_id', auth, async (req, res) => {
+    try {
+        const profile = await Profile.findOne({
+            user: req.user.id
+        });
+
+        const removeIndex = profile.experience.map(item => item.id).indexOf(req.params.exp_id);
+
+        profile.experience.splice(removeIndex, 1);
+
+        await profile.save();
+        res.json(profile);
+    } catch (error) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+// @route     PUT api/profile/education
+// @desc      Add profile education
+// @access    private
+router.put('/education', [auth, [
+    check('school', 'School name is required').not().isEmpty(),
+    check('degree', 'Degree level is required').not().isEmpty(),
+    check('fieldofstudy', 'Field of study is required').not().isEmpty(),
+    check('from', 'From date is required').not().isEmpty(),
+]], async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            errors: errors.array()
+        });
+    }
+
+    const {
+        school,
+        degree,
+        fieldofstudy,
+        from,
+        to,
+        current,
+        description
+    } = req.body;
+
+    const newEdu = {
+        school,
+        degree,
+        fieldofstudy,
+        from,
+        to,
+        current,
+        description
+    };
+
+    try {
+        const profile = await Profile.findOne({
+            user: req.user.id
+        });
+
+        profile.education.unshift(newEdu);
+
+        profile.save();
+        res.json(profile);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+// @route     DELETE api/profile/education/exp_id
+// @desc      Delete profile education
+// @access    private
+router.delete('/education/:edu_id', auth, async (req, res) => {
+    try {
+        const profile = await Profile.findOne({
+            user: req.user.id
+        });
+
+        const removeIndex = profile.education.map(item => item.id).indexOf(req.params.edu_id);
+
+        profile.education.splice(removeIndex, 1);
+
+        await profile.save();
+        res.json(profile);
+    } catch (error) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+
 
 module.exports = router;
