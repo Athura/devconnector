@@ -1,22 +1,26 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { loginUser } from '../../actions/auth';
 // import axios from 'axios';
 
-const Login = () => {
-    const [formData, setFormData] = useState({
-        email: '',
-        password: '',
-    });
+const Login = ({ loginUser }) => {
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
 
-    const { email, password } = formData;
+  const { email, password } = formData;
 
-    const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
+  const onChange = e =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
 
-    const onSubmit = async e => {
-        e.preventDefault();
+  const onSubmit = async e => {
+    e.preventDefault();
 
-        console.log('SUCCESS!');
-    }
+    loginUser(email, password);
+  };
 
   return (
     <Fragment>
@@ -26,7 +30,14 @@ const Login = () => {
       </p>
       <form className="form" onSubmit={e => onSubmit(e)}>
         <div className="form-group">
-          <input type="email" placeholder="Email Address" value={email} onChange={e => onChange(e)} name="email" required />
+          <input
+            type="email"
+            placeholder="Email Address"
+            value={email}
+            onChange={e => onChange(e)}
+            name="email"
+            required
+          />
         </div>
         <div className="form-group">
           <input
@@ -38,7 +49,7 @@ const Login = () => {
             onChange={e => onChange(e)}
           />
         </div>
-        <input type="submit" className="btn btn-primary"  value="Login" />
+        <input type="submit" className="btn btn-primary" value="Login" />
       </form>
       <p className="my-1">
         Don't have an account? <Link to="/register">Sign Up</Link>
@@ -47,4 +58,11 @@ const Login = () => {
   );
 };
 
-export default Login;
+Login.propTypes = {
+  loginUser: PropTypes.func.isRequired
+};
+
+export default connect(
+  null,
+  { loginUser }
+)(Login);
