@@ -22,7 +22,7 @@ export default function(state = initialState, action) {
     case USER_LOADED:
       return {
         ...state,
-        setAuthenticated: true,
+        isAuthenticated: true,
         loading: false,
         user: payload
       };

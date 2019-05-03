@@ -39,9 +39,9 @@ router.post('/', [auth, [
     check("skills", "Skills are required.").not().isEmpty()
 ]], async (req, res) => {
     const error = validationResult(req);
-    if (!errors.isEmpty()) {
+    if (!error.isEmpty()) {
         return res.status(400).json({
-            errors: errors.array()
+            errors: error.array()
         })
     }
 
@@ -99,7 +99,7 @@ router.post('/', [auth, [
 
         profile = new Profile(profileFields);
 
-        await Profile.save();
+        await profile.save();
         res.json(profile);
     } catch (err) {
         console.error(err.message);
