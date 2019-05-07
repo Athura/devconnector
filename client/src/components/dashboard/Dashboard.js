@@ -6,6 +6,8 @@ import { getCurrentProfile } from "../../actions/profile";
 import Spinner from "../layout/Spinner";
 
 import DashboardActions from './DashboardActions';
+import Experience from './Experience';
+import Education from './Education';
 
 const Dashboard = ({
   getCurrentProfile,
@@ -26,6 +28,8 @@ const Dashboard = ({
       </p>
       { profile !== null ? <Fragment>
         <DashboardActions />
+        <Experience experience={profile.experience} />
+        <Education education={profile.education} />
       </Fragment> : <Fragment>
           <p>You have not yet set up a profile. Please add some info!</p>
           <Link to="/create-profile" className="btn btn-primary my-1">
