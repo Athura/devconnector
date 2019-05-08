@@ -99,7 +99,7 @@ router.post('/', [auth, [
 
         profile = new Profile(profileFields);
 
-        await Profile.save();
+        await profile.save();
         res.json(profile);
     } catch (err) {
         console.error(err.message);
@@ -140,7 +140,7 @@ router.get('/user/:user_id', async (req, res) => {
                 msg: 'Profile not found'
             })
         }
-        res.json(profiles);
+        res.json(profile);
     } catch (err) {
         console.error(err.message);
         if (err.kind == 'ObjectId') {
